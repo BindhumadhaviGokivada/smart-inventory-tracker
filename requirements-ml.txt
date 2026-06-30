@@ -1,0 +1,5 @@
+# Optional: local experiments with the legacy TensorFlow LSTM stack (not used by app runtime).
+# pip install -r requirements.txt -r requirements-ml.txt
+tensorflow>=2.10.0; sys_platform != "linux"
+tensorflow-cpu>=2.10.0; sys_platform == "linux"
+statsmodels>=0.13.0

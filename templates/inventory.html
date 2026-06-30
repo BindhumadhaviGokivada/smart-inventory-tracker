@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}Inventory · {{ app_name }}{% endblock %}
+{% block content %}
+<section class="page-intro">
+    <h1>Inventory</h1>
+    <p class="muted">Rows below threshold and items expiring within seven days.</p>
+</section>
+
+{% if metrics %}
+<section class="stats-row" aria-label="Totals">
+    <div class="stat">
+        <span class="stat__value">{{ metrics.total_products }}</span>
+        <span class="stat__label">Products</span>
+    </div>
+    <div class="stat">
+        <span class="stat__value">{{ metrics.low_stock_count }}</span>
+        <span class="stat__label">Low stock</span>
+    </div>
+    <div class="stat">
+        <span class="stat__value">{{ "%.0f"|format(metrics.average_stock_level) }}</span>
+        <span class="stat__label">Avg stock</span>
+    </div>
+    <div class="stat">
+        <span class="stat__value">${{ "%.0f"|format(metrics.total_stock_value) }}</span>
+        <span class="stat__label">Stock value</span>
+    </div>
+</section>
+{% endif %}
+
+<div class="grid-2">
+    <section class="panel">
+        <h2>Below threshold (≤300)</h2>
+        {% if restock_recommendations %}
+        <div class="table-wrap table-wrap--tall">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Qty</th>
+                        <th>Min</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in restock_recommendations %}
+                    <tr>
+                        <td>{{ product.product_id }}</td>
+                        <td>{{ product.product_name }}</td>
+                        <td><strong>{{ product.quantity_stock }}</strong></td>
+                        <td>{{ product.minimum_stock_level }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="muted">Nothing under threshold.</p>
+        {% endif %}
+    </section>
+
+    <section class="panel">
+        <h2>Expiring within 7 days</h2>
+        {% if near_expiry_recommendations %}
+        <div class="table-wrap table-wrap--tall">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Expiry</th>
+                        <th>Days</th>
+                        <th>Qty</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in near_expiry_recommendations %}
+                    <tr>
+                        <td>{{ product.product_id }}</td>
+                        <td>{{ product.product_name }}</td>
+                        <td>{% if product.expiry_date is not none %}{{ product.expiry_date }}{% else %}—{% endif %}</td>
+                        <td>
+                            {% if product.days_until_expiry <= 0 %}
+                                <span class="tag tag-bad">expired</span>
+                            {% else %}
+                                {{ product.days_until_expiry }}
+                            {% endif %}
+                        </td>
+                        <td>{{ product.quantity_stock }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="muted">No rows in that window.</p>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

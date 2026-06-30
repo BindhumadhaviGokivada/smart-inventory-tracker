@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Home · {{ app_name }}{% endblock %}
+{% block content %}
+<section class="page-intro page-intro--row">
+    <div>
+        <h1>Overview</h1>
+        <p class="muted">Upload a CSV. Use the header for Inventory, Analytics, and Forecast.</p>
+    </div>
+    <button type="button" class="btn btn-secondary" id="refreshKpis">Refresh KPIs</button>
+</section>
+
+<section class="stats-row" aria-label="Summary">
+    <div class="stat">
+        <span class="stat__value" id="totalProducts">…</span>
+        <span class="stat__label">Products</span>
+    </div>
+    <div class="stat">
+        <span class="stat__value" id="lowStockCount">…</span>
+        <span class="stat__label">Low stock</span>
+    </div>
+    <div class="stat">
+        <span class="stat__value" id="totalRevenue">…</span>
+        <span class="stat__label">Revenue (sum)</span>
+    </div>
+    <div class="stat">
+        <span class="stat__value" id="nearExpiryCount">…</span>
+        <span class="stat__label">Near expiry</span>
+    </div>
+</section>
+
+<section class="panel">
+    <h2>Upload CSV</h2>
+    <p class="muted">Expected columns include product id, name, quantity, revenue, and expiry.</p>
+    <form id="uploadForm" enctype="multipart/form-data" class="stack">
+        <div class="field">
+            <label for="fileInput">File</label>
+            <div class="dropzone" id="uploadDropzone">
+                <input type="file" name="file" id="fileInput" accept=".csv" required class="dropzone__input">
+                <span class="dropzone__label">Choose a file or drop it here</span>
+            </div>
+        </div>
+        <div id="filePreview" class="file-preview" aria-live="polite"></div>
+        <button type="submit" class="btn btn-primary" id="uploadSubmitBtn">Upload</button>
+    </form>
+</section>
+{% endblock %}

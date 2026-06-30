@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Forecast · {{ app_name }}{% endblock %}
+{% block content %}
+<section class="page-intro">
+    <h1>Stock forecast</h1>
+    <p class="muted">Regressor trained on <code>quantity_stock</code> in your CSV. Enter three values, newest first.</p>
+</section>
+
+<section class="panel">
+    <h2>Model and train</h2>
+    <p class="muted" id="modelStatus" role="status">
+        {% if model_loaded %}
+        A trained model file is loaded for predictions.
+        {% else %}
+        No trained model yet. Upload data, then train (Forecast needs enough rows in the CSV).
+        {% endif %}
+    </p>
+    <div class="model-row">
+        <button type="button" class="btn btn-primary" id="trainModelBtn">Train</button>
+    </div>
+    <p class="muted small">On serverless hosts, trained files may not persist between cold starts.</p>
+
+    <h2 class="panel__subhead">Predict next level</h2>
+    <form id="predictionForm" class="stack">
+        <div class="grid-3">
+            <div class="field">
+                <label for="quantity1">Period 1 (latest)</label>
+                <input type="number" id="quantity1" name="quantity1" required min="0" step="0.01">
+            </div>
+            <div class="field">
+                <label for="quantity2">Period 2</label>
+                <input type="number" id="quantity2" name="quantity2" required min="0" step="0.01">
+            </div>
+            <div class="field">
+                <label for="quantity3">Period 3</label>
+                <input type="number" id="quantity3" name="quantity3" required min="0" step="0.01">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Run</button>
+    </form>
+
+    <div id="predictionResult" class="prediction-result" hidden>
+        <h3>Result</h3>
+        <p class="prediction-result__line" id="predictionValue"></p>
+    </div>
+</section>
+{% endblock %}
